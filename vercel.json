@@ -1,0 +1,1 @@
+{"version":2,"buildCommand":"mkdir -p dist && cp -r frontend/* dist/","outputDirectory":"dist"}
