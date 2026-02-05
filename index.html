@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人生游戏 - 个人游戏大厅</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 顶部状态栏 */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-details h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .level-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .level-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .exp-bar {
+            flex: 1;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            max-width: 300px;
+        }
+
+        .exp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            width: 65%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 400px 1fr 250px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* 五行属性五边形 */
+        .attributes-panel {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .attributes-panel h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .pentagon-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .pentagon-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .attribute-label {
+            position: absolute;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .attribute-value {
+            position: absolute;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .attribute-info {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .attr-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .attr-icon {
+            font-size: 18px;
+        }
+
+        /* 功能模块区域 */
+        .modules-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .module-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .module-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .module-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .module-list {
+            margin-top: 15px;
+            list-style: none;
+        }
+
+        .module-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .module-list li:last-child {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+
+        /* 侧边导航 */
+        .sidebar {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-menu a:hover {
+            background: white;
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* 模式切换 */
+        .mode-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .mode-switch button {
+            padding: 5px 15px;
+            border: none;
+            border-radius: 15px;
+            background: #e0e0e0;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .mode-switch button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* 挑战详情卡片 */
+        .challenge-detail {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .challenge-progress {
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .skills-required {
+            margin-top: 15px;
+        }
+
+        .skills-required h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .skill-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .skill-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .skill-status-icon {
+            font-size: 16px;
+        }
+
+        .skill-level {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .btn-improve {
+            padding: 4px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-improve:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        /* 复盘弹窗 */
+        .retrospect-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .retrospect-modal.active {
+            display: flex;
+        }
+
+        .retrospect-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .retrospect-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .retrospect-header h2 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .retrospect-section {
+            margin-bottom: 25px;
+        }
+
+        .retrospect-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .rating-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .rating-option {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .rating-option:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .rating-option.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .attribute-consumption {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .attr-consumption-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attr-consumption-item label {
+            min-width: 80px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .attr-bar {
+            flex: 1;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .attr-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .attr-bar-value {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .suggestion-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .suggestion-option {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+
+        .suggestion-option:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .suggestion-option.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .data-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .data-item {
+            padding: 12px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .data-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .insight-input {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .insight-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .system-suggestions {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .system-suggestions h4 {
+            margin-bottom: 10px;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .system-suggestions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .system-suggestions li {
+            padding: 8px 0;
+            font-size: 13px;
+            color: #666;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .system-suggestions li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-retrospect {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-retrospect:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 模式切换 -->
+    <div class="mode-switch">
+        <span>模式：</span>
+        <button class="active" onclick="switchMode('simple')">简洁模式</button>
+        <button onclick="switchMode('immersive')">沉浸模式</button>
+    </div>
+
+    <div class="container">
+        <!-- 顶部状态栏 -->
+        <div class="status-bar">
+            <div class="user-info">
+                <div class="avatar">用</div>
+                <div class="user-details">
+                    <h3>用户名</h3>
+                    <div class="level-info">
+                        <span class="level-badge">Lv.15</span>
+                        <div class="exp-bar">
+                            <div class="exp-fill">65%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="main-content">
+            <!-- 五行属性五边形（左侧） -->
+            <div class="attributes-panel">
+                <h2>五行属性</h2>
+                <div class="pentagon-container">
+                    <svg class="pentagon-svg" viewBox="0 0 300 300">
+                        <!-- 背景网格 -->
+                        <polygon points="150,50 250,120 220,220 80,220 50,120" 
+                                fill="rgba(102, 126, 234, 0.1)" 
+                                stroke="#ddd" 
+                                stroke-width="1"/>
+                        <polygon points="150,80 220,130 200,200 100,200 80,130" 
+                                fill="rgba(102, 126, 234, 0.1)" 
+                                stroke="#ddd" 
+                                stroke-width="1"/>
+                        <polygon points="150,110 190,140 180,180 120,180 110,140" 
+                                fill="rgba(102, 126, 234, 0.1)" 
+                                stroke="#ddd" 
+                                stroke-width="1"/>
+                        
+                        <!-- 实际属性值（五边形） -->
+                        <polygon id="attr-polygon" 
+                                points="150,50 250,120 220,220 80,220 50,120" 
+                                fill="rgba(102, 126, 234, 0.3)" 
+                                stroke="#667eea" 
+                                stroke-width="2"/>
+                        
+                        <!-- 中心点 -->
+                        <circle cx="150" cy="150" r="5" fill="#667eea"/>
+                    </svg>
+                    
+                    <!-- 属性标签和数值 -->
+                    <div class="attribute-label" style="top: 10px; left: 50%; transform: translateX(-50%);">木·健康</div>
+                    <div class="attribute-value" style="top: 30px; left: 50%; transform: translateX(-50%);">75</div>
+                    
+                    <div class="attribute-label" style="top: 50%; right: 10px; transform: translateY(-50%);">火·精力</div>
+                    <div class="attribute-value" style="top: 50%; right: 30px; transform: translateY(-50%);">68</div>
+                    
+                    <div class="attribute-label" style="bottom: 10px; left: 50%; transform: translateX(-50%);">土·智慧</div>
+                    <div class="attribute-value" style="bottom: 30px; left: 50%; transform: translateX(-50%);">82</div>
+                    
+                    <div class="attribute-label" style="top: 50%; left: 10px; transform: translateY(-50%);">金·财富</div>
+                    <div class="attribute-value" style="top: 50%; left: 30px; transform: translateY(-50%);">60</div>
+                    
+                    <div class="attribute-label" style="top: 10px; left: 50%; transform: translateX(-50%) translateY(100px);">水·心情</div>
+                    <div class="attribute-value" style="top: 10px; left: 50%; transform: translateX(-50%) translateY(120px);">70</div>
+                </div>
+                
+                <div class="attribute-info">
+                    <div class="attr-item">
+                        <span class="attr-icon">🌳</span>
+                        <span>健康值: 75</span>
+                    </div>
+                    <div class="attr-item">
+                        <span class="attr-icon">🔥</span>
+                        <span>精力值: 68</span>
+                    </div>
+                    <div class="attr-item">
+                        <span class="attr-icon">🏔️</span>
+                        <span>智慧值: 82</span>
+                    </div>
+                    <div class="attr-item">
+                        <span class="attr-icon">⭐</span>
+                        <span>财富值: 60</span>
+                    </div>
+                    <div class="attr-item" style="grid-column: 1 / -1;">
+                        <span class="attr-icon">💧</span>
+                        <span>心情值: 70</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 功能模块区域（中央右侧） -->
+            <div class="modules-area">
+                <!-- 主线任务区 -->
+                <div class="module-card">
+                    <div class="module-icon">🗺️</div>
+                    <h3>主线任务</h3>
+                    <p>当前正在挑战的Boss和子任务</p>
+                    
+                    <!-- Boss信息 -->
+                    <div style="margin-top: 15px; padding: 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px;">
+                        <strong>Boss: 获得Python高级工程师Offer</strong>
+                        <span class="badge" style="margin-left: 8px;">进行中</span>
+                    </div>
+
+                    <!-- 里程碑1：完成后端项目 -->
+                    <div class="challenge-detail">
+                        <h4 style="margin-bottom: 10px; font-size: 14px;">里程碑1: 完成一个后端项目</h4>
+                        <div class="challenge-progress">
+                            <div class="progress-label">
+                                <span>挑战进度</span>
+                                <span>40%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 40%;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="skills-required">
+                            <h4>所需技能</h4>
+                            <div class="skill-item">
+                                <div class="skill-status">
+                                    <span class="skill-status-icon">✅</span>
+                                    <span>Python</span>
+                                </div>
+                                <div class="skill-level">Lv.4/4</div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-status">
+                                    <span class="skill-status-icon">🔄</span>
+                                    <span>Django</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="skill-level">Lv.2/3</span>
+                                    <button class="btn-improve" onclick="showImproveTips('Django')">如何提升</button>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-status">
+                                    <span class="skill-status-icon">⏳</span>
+                                    <span>数据库设计</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="skill-level">Lv.1/2</span>
+                                    <button class="btn-improve" onclick="showImproveTips('数据库设计')">如何提升</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-retrospect" onclick="openRetrospect('challenge', '完成一个后端项目')">进行挑战复盘</button>
+                    </div>
+
+                    <!-- 里程碑2：LeetCode -->
+                    <div class="challenge-detail" style="margin-top: 15px;">
+                        <h4 style="margin-bottom: 10px; font-size: 14px;">里程碑2: 刷完LeetCode 150题</h4>
+                        <div class="challenge-progress">
+                            <div class="progress-label">
+                                <span>挑战进度</span>
+                                <span>85/150 (57%)</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 57%;"></div>
+                            </div>
+                        </div>
+                        <div class="skills-required">
+                            <h4>所需技能</h4>
+                            <div class="skill-item">
+                                <div class="skill-status">
+                                    <span class="skill-status-icon">🔄</span>
+                                    <span>算法与数据结构</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="skill-level">Lv.3/4</span>
+                                    <button class="btn-improve" onclick="showImproveTips('算法与数据结构')">如何提升</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-retrospect" onclick="openRetrospect('challenge', '刷完LeetCode 150题')">进行挑战复盘</button>
+                    </div>
+
+                    <!-- 里程碑3：技术面试准备 -->
+                    <div class="challenge-detail" style="margin-top: 15px;">
+                        <h4 style="margin-bottom: 10px; font-size: 14px;">里程碑3: 通过技术面试准备</h4>
+                        <div class="challenge-progress">
+                            <div class="progress-label">
+                                <span>挑战进度</span>
+                                <span>20%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 20%;"></div>
+                            </div>
+                        </div>
+                        <div class="skills-required">
+                            <h4>所需技能</h4>
+                            <div class="skill-item">
+                                <div class="skill-status">
+                                    <span class="skill-status-icon">⏳</span>
+                                    <span>简历与项目表述</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="skill-level">Lv.1/3</span>
+                                    <button class="btn-improve" onclick="showImproveTips('简历与项目表述')">如何提升</button>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-status">
+                                    <span class="skill-status-icon">⏳</span>
+                                    <span>系统设计基础</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="skill-level">Lv.1/3</span>
+                                    <button class="btn-improve" onclick="showImproveTips('系统设计基础')">如何提升</button>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-status">
+                                    <span class="skill-status-icon">🔄</span>
+                                    <span>模拟面试</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="skill-level">Lv.2/4</span>
+                                    <button class="btn-improve" onclick="showImproveTips('模拟面试')">如何提升</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-retrospect" onclick="openRetrospect('challenge', '通过技术面试准备')">进行挑战复盘</button>
+                    </div>
+                </div>
+
+                <!-- 技能装备库 -->
+                <div class="module-card">
+                    <div class="module-icon">⚔️</div>
+                    <h3>技能装备库</h3>
+                    <p>已拥有和正在学习的技能</p>
+                    <ul class="module-list">
+                        <li>Python编程 <span class="badge">Lv.3</span></li>
+                        <li>公开演讲 <span class="badge">Lv.2</span></li>
+                        <li>健身知识 <span class="badge">Lv.4</span></li>
+                    </ul>
+                </div>
+
+                <!-- 日常/周常任务 -->
+                <div class="module-card">
+                    <div class="module-icon">📊</div>
+                    <h3>日常任务</h3>
+                    <p>今日需要完成的任务清单</p>
+                    <ul class="module-list">
+                        <li>
+                            ✅ 每日刷题 2 道
+                            <button class="btn-retrospect" style="margin-left: 10px; padding: 4px 10px; font-size: 11px;" onclick="openRetrospect('quick', '每日刷题 2 道')">快速复盘</button>
+                        </li>
+                        <li>⏳ 健身30分钟</li>
+                        <li>⏳ 阅读技术文档1小时</li>
+                    </ul>
+                </div>
+
+                <!-- 奖励仓库 -->
+                <div class="module-card">
+                    <div class="module-icon">🎁</div>
+                    <h3>奖励仓库</h3>
+                    <p>获得的奖励和成就</p>
+                    <ul class="module-list">
+                        <li>徽章: 连续学习7天</li>
+                        <li>称号: 早鸟</li>
+                        <li>金币: 1,250</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 侧边导航 -->
+            <div class="sidebar">
+                <h3>导航</h3>
+                <ul class="nav-menu">
+                    <li><a href="#"><span class="nav-icon">🍽️</span> 饮食作息</a></li>
+                    <li><a href="#"><span class="nav-icon">📝</span> 计划制定</a></li>
+                    <li><a href="#"><span class="nav-icon">💰</span> 财务管理</a></li>
+                    <li><a href="#"><span class="nav-icon">👥</span> 社交</a></li>
+                    <li><a href="#"><span class="nav-icon">🏪</span> 商店</a></li>
+                    <li><a href="#"><span class="nav-icon">⚙️</span> 设置</a></li>
+                    <li><a href="#"><span class="nav-icon">💬</span> 励志墙</a></li>
+                    <li><a href="#" onclick="openRetrospect('strategic', ''); return false;"><span class="nav-icon">📈</span> 战略复盘</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 复盘弹窗 -->
+    <div id="retrospectModal" class="retrospect-modal">
+        <div class="retrospect-content">
+            <div class="retrospect-header">
+                <h2 id="retrospectTitle">快速复盘</h2>
+                <button class="close-btn" onclick="closeRetrospect()">&times;</button>
+            </div>
+            
+            <!-- 快速复盘内容 -->
+            <div id="quickRetrospect" style="display: none;">
+                <div class="retrospect-section">
+                    <h3>✅ 今日"<span id="quickTaskName"></span>"已完成！</h3>
+                </div>
+                
+                <div class="retrospect-section">
+                    <h3>1. 这次体验如何？</h3>
+                    <div class="rating-options">
+                        <div class="rating-option" onclick="selectRating(this, 'easy')">
+                            😊 轻松愉快
+                        </div>
+                        <div class="rating-option" onclick="selectRating(this, 'normal')">
+                            😌 适中可控
+                        </div>
+                        <div class="rating-option" onclick="selectRating(this, 'hard')">
+                            😓 有点吃力
+                        </div>
+                        <div class="rating-option" onclick="selectRating(this, 'very-hard')">
+                            😫 非常煎熬
+                        </div>
+                    </div>
+                </div>
+
+                <div class="retrospect-section">
+                    <h3>2. 实际属性消耗如何？</h3>
+                    <div class="attribute-consumption">
+                        <div class="attr-consumption-item">
+                            <label>火(精力)</label>
+                            <div class="attr-bar">
+                                <div class="attr-bar-fill" id="quickFire" style="width: 80%;"></div>
+                                <span class="attr-bar-value" id="quickFireValue">80%</span>
+                            </div>
+                        </div>
+                        <div class="attr-consumption-item">
+                            <label>水(心情)</label>
+                            <div class="attr-bar">
+                                <div class="attr-bar-fill" id="quickWater" style="width: 40%;"></div>
+                                <span class="attr-bar-value" id="quickWaterValue">40%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="retrospect-section">
+                    <h3>3. 明天的建议？</h3>
+                    <div class="suggestion-options">
+                        <div class="suggestion-option" onclick="selectSuggestion(this)">
+                            保持节奏
+                        </div>
+                        <div class="suggestion-option" onclick="selectSuggestion(this)">
+                            适当减少
+                        </div>
+                        <div class="suggestion-option" onclick="selectSuggestion(this)">
+                            增加休息
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 挑战复盘内容 -->
+            <div id="challengeRetrospect" style="display: none;">
+                <div class="retrospect-section">
+                    <h3>🎉 恭喜击败"<span id="challengeName"></span>"！</h3>
+                </div>
+
+                <div class="retrospect-section">
+                    <h3>📊 实际数据 vs 预计数据</h3>
+                    <div class="data-comparison">
+                        <div class="data-item">
+                            <strong>时间</strong>
+                            <span>3天(预计5天) ✅</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>精力消耗</strong>
+                            <span>+15%(高于预期) ⚠️</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>心情消耗</strong>
+                            <span>-10%(低于预期) ✅</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>完成度</strong>
+                            <span>100% ✅</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="retrospect-section">
+                    <h3>❓ 关键问题</h3>
+                    <div style="margin-bottom: 15px;">
+                        <strong style="display: block; margin-bottom: 8px;">1. 什么做得好？</strong>
+                        <textarea class="insight-input" placeholder="例如：提前准备了模板，专注时段安排得当..."></textarea>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <strong style="display: block; margin-bottom: 8px;">2. 遇到什么困难？</strong>
+                        <textarea class="insight-input" placeholder="例如：数据清洗耗时超预期，中途被打断2次..."></textarea>
+                    </div>
+                    <div>
+                        <strong style="display: block; margin-bottom: 8px;">3. 下次如何改进？</strong>
+                        <textarea class="insight-input" placeholder="例如：预留20%缓冲时间，使用"勿扰模式"..."></textarea>
+                    </div>
+                </div>
+
+                <div class="retrospect-section">
+                    <div class="system-suggestions">
+                        <h4>🔧 基于本次复盘，系统建议：</h4>
+                        <ul>
+                            <li>将"数据清洗"设为独立挑战</li>
+                            <li>调整"办公任务"属性消耗：火：+10% 水：-5%</li>
+                            <li>获得"效率先锋"徽章</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 战略复盘内容 -->
+            <div id="strategicRetrospect" style="display: none;">
+                <div class="retrospect-section">
+                    <h3>🌟 年度成长报告会</h3>
+                </div>
+
+                <div class="retrospect-section">
+                    <h3>📈 属性成长趋势</h3>
+                    <div class="data-comparison">
+                        <div class="data-item">
+                            <strong>健康值</strong>
+                            <span>65 → 78 (+20%)</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>财富值</strong>
+                            <span>50 → 60 (+20%)</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>心情值</strong>
+                            <span>40 → 45 (+12%)</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>智慧值</strong>
+                            <span>70 → 85 (+21%)</span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 13px; color: #666;">*你的健康与财富同步增长*</p>
+                </div>
+
+                <div class="retrospect-section">
+                    <h3>🎯 挑战成功率分析</h3>
+                    <div class="data-comparison">
+                        <div class="data-item">
+                            <strong>技术类</strong>
+                            <span>92% (擅长) ✅</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>社交类</strong>
+                            <span>65% (待提升) ⚠️</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>创意类</strong>
+                            <span>78% (稳定) ✅</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>总体</strong>
+                            <span>82% (优秀) ⭐</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="retrospect-section">
+                    <h3>🔍 发现你的模式</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 8px 0; font-size: 13px; color: #666;">✓ 晨间效率是晚间的2.3倍</li>
+                        <li style="padding: 8px 0; font-size: 13px; color: #666;">✓ 有氧运动后学习效率+30%</li>
+                        <li style="padding: 8px 0; font-size: 13px; color: #666;">✓ 周末连续工作会降低心情值</li>
+                    </ul>
+                </div>
+
+                <div class="retrospect-section">
+                    <div class="system-suggestions">
+                        <h4>💡 战略建议</h4>
+                        <ul>
+                            <li>将重要任务安排在上午</li>
+                            <li>运动和学习结合</li>
+                            <li>周六设为放松日</li>
+                            <li>加强社交类技能训练</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-submit" onclick="submitRetrospect()">提交复盘</button>
+        </div>
+    </div>
+
+    <script>
+        // 五行属性值（0-100）
+        const attributes = {
+            wood: 75,    // 木·健康
+            fire: 68,    // 火·精力
+            earth: 82,   // 土·智慧
+            metal: 60,   // 金·财富
+            water: 70    // 水·心情
+        };
+
+        // 计算五边形顶点坐标（基于属性值）
+        function updatePentagon() {
+            const centerX = 150;
+            const centerY = 150;
+            const radius = 100;
+            
+            // 将属性值转换为相对于中心的位置（0-100 -> 0-100像素）
+            const woodY = centerY - (attributes.wood / 100) * radius;
+            const fireX = centerX + (attributes.fire / 100) * radius * 0.951;
+            const fireY = centerY - (attributes.fire / 100) * radius * 0.309;
+            const earthX = centerX + (attributes.earth / 100) * radius * 0.588;
+            const earthY = centerY + (attributes.earth / 100) * radius * 0.809;
+            const metalX = centerX - (attributes.metal / 100) * radius * 0.588;
+            const metalY = centerY + (attributes.metal / 100) * radius * 0.809;
+            const waterX = centerX - (attributes.water / 100) * radius * 0.951;
+            const waterY = centerY - (attributes.water / 100) * radius * 0.309;
+            
+            const points = `${centerX},${woodY} ${fireX},${fireY} ${earthX},${earthY} ${metalX},${metalY} ${waterX},${waterY}`;
+            
+            document.getElementById('attr-polygon').setAttribute('points', points);
+        }
+
+        // 模式切换
+        function switchMode(mode) {
+            const buttons = document.querySelectorAll('.mode-switch button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (mode === 'immersive') {
+                alert('沉浸模式：五行生克关系完整呈现，古文风格提示');
+            } else {
+                alert('简洁模式：现代解读，直观箭头提示');
+            }
+        }
+
+        // 初始化
+        updatePentagon();
+
+        // 复盘系统
+        let currentRetrospectType = '';
+        let currentRetrospectData = {};
+
+        function openRetrospect(type, name) {
+            currentRetrospectType = type;
+            const modal = document.getElementById('retrospectModal');
+            const quickDiv = document.getElementById('quickRetrospect');
+            const challengeDiv = document.getElementById('challengeRetrospect');
+            const strategicDiv = document.getElementById('strategicRetrospect');
+            const title = document.getElementById('retrospectTitle');
+
+            // 隐藏所有复盘内容
+            quickDiv.style.display = 'none';
+            challengeDiv.style.display = 'none';
+            strategicDiv.style.display = 'none';
+
+            if (type === 'quick') {
+                quickDiv.style.display = 'block';
+                document.getElementById('quickTaskName').textContent = name;
+                title.textContent = '快速复盘';
+            } else if (type === 'challenge') {
+                challengeDiv.style.display = 'block';
+                document.getElementById('challengeName').textContent = name;
+                title.textContent = '挑战复盘';
+            } else if (type === 'strategic') {
+                strategicDiv.style.display = 'block';
+                title.textContent = '战略复盘';
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeRetrospect() {
+            const modal = document.getElementById('retrospectModal');
+            modal.classList.remove('active');
+            // 重置选择
+            document.querySelectorAll('.rating-option').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.suggestion-option').forEach(el => el.classList.remove('selected'));
+        }
+
+        function selectRating(element, value) {
+            document.querySelectorAll('.rating-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            currentRetrospectData.rating = value;
+        }
+
+        function selectSuggestion(element) {
+            document.querySelectorAll('.suggestion-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            currentRetrospectData.suggestion = element.textContent.trim();
+        }
+
+        function showImproveTips(skill) {
+            alert(`提升${skill}的建议：\n\n1. 完成相关学习任务\n2. 参与实战项目\n3. 阅读技术文档\n4. 观看视频教程\n\n系统将为你推荐定制化学习路径！`);
+        }
+
+        function submitRetrospect() {
+            // 这里可以添加提交逻辑
+            alert('复盘已提交！\n\n获得奖励：\n- 50金币\n- 经验值+100\n- "自我觉察者"经验值+10');
+            closeRetrospect();
+        }
+
+        // 点击模态框外部关闭
+        document.getElementById('retrospectModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeRetrospect();
+            }
+        });
+
+        // 模拟属性变化动画
+        setInterval(() => {
+            // 随机微调属性值（演示用）
+            // attributes.wood += (Math.random() - 0.5) * 2;
+            // attributes.wood = Math.max(0, Math.min(100, attributes.wood));
+            // updatePentagon();
+        }, 3000);
+    </script>
+</body>
+</html>
