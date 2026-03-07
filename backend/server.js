@@ -679,6 +679,52 @@ app.post('/api/auth/qq', (req, res) => {
   });
 });
 
+// 微信小程序「游客登录」测试入口：不做真实解密，只创建/返回一个测试用户
+app.post('/api/auth/wx-login-test', (req, res) => {
+  // 随便拿一个现有用户；如果没有就创建一个测试用户
+  let user = users[0];
+  if (!user) {
+    const nowIso = new Date().toISOString();
+    user = {
+      id: users.length + 1,
+      phone: null,
+      username: '测试玩家',
+      avatar_url: null,
+      coins: 0,
+      total_xp: 0,
+      level: 1,
+      cash_balance: 0,
+      attributes: {
+        wood: 60,
+        fire: 60,
+        earth: 60,
+        metal: 60,
+        water: 60,
+      },
+      last_tick_at: Date.now(),
+      last_login_at: nowIso,
+      last_boss_decay_at: null,
+      shield_until: null,
+      created_at: nowIso,
+    };
+    users.push(user);
+  } else {
+    user.last_login_at = new Date().toISOString();
+  }
+  if (!user.last_tick_at) user.last_tick_at = Date.now();
+
+  const token = createToken(user.id);
+  return res.json({
+    success: true,
+    token,
+    user: {
+      id: user.id,
+      username: user.username,
+      avatar_url: user.avatar_url,
+    },
+  });
+});
+
 // ======== 主页数据 API（游戏大厅）========
 
 app.get('/api/home', (req, res) => {

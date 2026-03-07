@@ -1,0 +1,626 @@
+page {
+  height: 100%;
+  background-color: #667eea; /* 备用背景色 */
+}
+
+.page {
+  position: relative;
+  height: 100%;
+}
+
+.bg-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  object-fit: cover;
+}
+
+.home-scroll {
+  width: 100%;
+  height: 100%;
+  margin-left: 0;
+}
+
+.home-content {
+  min-height: 100%;
+  box-sizing: border-box;
+  padding: 8rpx 10rpx;
+}
+
+.card,
+.nav-card {
+  border-radius: 12rpx;
+  padding: 8rpx 10rpx;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20rpx);
+  box-shadow: 0 6rpx 20rpx rgba(15, 23, 42, 0.3);
+  border: 1rpx solid rgba(255, 255, 255, 0.35);
+}
+
+.status-bar.card {
+  padding: 6rpx 10rpx;
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+  padding: 6rpx 10rpx;
+}
+
+.status-left {
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.status-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  column-gap: 10rpx;
+}
+
+.avatar {
+  width: 38rpx;
+  height: 38rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18rpx;
+  font-weight: 700;
+}
+
+.user-name {
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.level-row {
+  display: flex;
+  align-items: center;
+  column-gap: 8rpx;
+  margin-top: 2rpx;
+}
+
+.level-badge {
+  padding: 2rpx 6rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  font-size: 16rpx;
+  color: #fff;
+}
+
+.exp-bar {
+  width: 100rpx;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.3);
+  overflow: hidden;
+}
+
+.exp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.exp-label {
+  font-size: 14rpx;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.status-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.amount-row {
+  display: flex;
+  align-items: center;
+  column-gap: 4rpx;
+}
+
+.amount-main {
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.amount-sub {
+  font-size: 14rpx;
+  opacity: 0.9;
+}
+
+.icon-bell {
+  font-size: 18rpx;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  column-gap: 8rpx;
+  align-items: flex-start;
+  overflow: visible;
+}
+
+.left-col,
+.center-col,
+.right-col {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8rpx;
+}
+
+.left-col {
+  width: 248rpx;
+  flex: 0 0 248rpx;
+  min-width: 248rpx;
+  min-height: 0;
+}
+
+.left-col .card.card-attr {
+  overflow: visible;
+  min-height: 280rpx;
+  padding-left: 10rpx;
+  padding-right: 10rpx;
+}
+
+.center-col {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 与网页一致：中列双栏网格 主线|技能 日常|奖励 补给(跨两列) 水晶(跨两列) */
+.modules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12rpx;
+}
+
+.card-span-2 {
+  grid-column: 1 / -1;
+}
+
+.right-col {
+  width: 188rpx;
+  flex: 0 0 188rpx;
+  flex-shrink: 0;
+}
+
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rpx;
+}
+
+.card-title {
+  font-size: 18rpx;
+  font-weight: 600;
+}
+
+.card-sub {
+  font-size: 14rpx;
+  opacity: 0.8;
+}
+
+.card-text {
+  font-size: 18rpx;
+  opacity: 0.9;
+}
+
+/* 中列：主线任务、日常任务等卡片略缩小，给五行图等留出空间 */
+.center-col .card {
+  padding: 8rpx 10rpx;
+}
+
+.center-col .card-title-row {
+  margin-bottom: 2rpx;
+}
+
+.center-col .card-title {
+  font-size: 16rpx;
+}
+
+.center-col .card-text {
+  font-size: 16rpx;
+}
+
+.center-col .task-row {
+  padding: 2rpx 0;
+  font-size: 16rpx;
+}
+
+.center-col .boss-row {
+  margin-bottom: 2rpx;
+}
+
+.center-col .boss-title {
+  font-size: 16rpx;
+}
+
+.center-col .btn-mini {
+  font-size: 14rpx;
+  padding: 2rpx 8rpx;
+}
+
+.center-col .reward-row {
+  padding: 2rpx 0;
+  font-size: 16rpx;
+}
+
+.card-text-wrap {
+  margin-bottom: 8rpx;
+}
+
+/* 补给包仓库：图二风格 - 浅色渐变背景 */
+.center-col .card-supply {
+  padding: 10rpx 12rpx;
+  border-radius: 12rpx;
+  background: linear-gradient(90deg, rgba(255, 252, 250, 0.95) 0%, rgba(255, 238, 228, 0.92) 100%);
+  border: 1rpx solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.center-col .card-supply .card-title,
+.center-col .card-supply .card-text {
+  color: #374151;
+}
+
+.supply-desc-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 10rpx;
+}
+
+.supply-desc-row .supply-desc {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+/* 灰色说明文字：横向、最多显示两行 */
+.supply-desc .card-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  writing-mode: horizontal-tb;
+  word-break: normal;
+  line-height: 1.4;
+}
+
+/* “快速创建情景补给包”：再偏高一点、再窄多一点 */
+.card-btn-supply-v2 {
+  flex-shrink: 0;
+  padding: 26rpx 4rpx;
+  font-size: 12rpx;
+  font-weight: 500;
+  color: #2563eb;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2rpx solid #93c5fd;
+  border-radius: 10rpx;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.card-btn {
+  width: 100%;
+  margin: 8rpx 0;
+  padding: 12rpx;
+  font-size: 26rpx;
+  border-radius: 12rpx;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: #fff;
+  border: none;
+}
+
+.supply-list {
+  margin-top: 8rpx;
+}
+
+.card-supply .supply-item {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.card-supply .supply-name {
+  color: #374151;
+}
+
+.supply-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 0;
+  font-size: 16rpx;
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.supply-item:last-child {
+  border-bottom: none;
+}
+
+.supply-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.supply-actions {
+  display: flex;
+  column-gap: 8rpx;
+  flex-shrink: 0;
+}
+
+.btn-tiny {
+  padding: 6rpx 14rpx;
+  font-size: 12rpx;
+  border-radius: 10rpx;
+}
+
+.btn-tiny-solid {
+  background: rgba(102, 126, 234, 0.85);
+  color: #fff;
+  border: none;
+}
+
+.btn-tiny-outline {
+  background: transparent;
+  color: rgba(102, 126, 234, 0.95);
+  border: 2rpx solid rgba(102, 126, 234, 0.6);
+}
+
+/* 设定人生水晶 & Boss：与同列卡片同框 + 下方表单 */
+.center-col .card-crystal {
+  padding: 8rpx 10rpx;
+  border-radius: 12rpx;
+}
+
+.crystal-form {
+  margin-top: 12rpx;
+}
+
+.crystal-field {
+  margin-bottom: 10rpx;
+}
+
+.crystal-label {
+  display: block;
+  font-size: 14rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 4rpx;
+}
+
+.crystal-input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 56rpx;
+  padding: 0 12rpx;
+  font-size: 14rpx;
+  color: #333;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 10rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+}
+
+.crystal-save-btn {
+  width: 100%;
+  margin-top: 16rpx;
+  padding: 14rpx;
+  font-size: 16rpx;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(102, 126, 234, 0.9);
+  border: none;
+  border-radius: 12rpx;
+}
+
+.radar-wrap {
+  width: 100%;
+  height: 228rpx;
+  margin-bottom: 8rpx;
+  flex-shrink: 0;
+  border-radius: 10rpx;
+  overflow: visible;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.radar-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+/* 用于绘制的 canvas 放在屏外，导出为图片后由 radar-image 显示 */
+.radar-canvas-wrap {
+  position: absolute;
+  left: -400px;
+  top: 0;
+  width: 280px;
+  height: 280px;
+  z-index: -1;
+}
+
+.radar-canvas {
+  width: 280px;
+  height: 280px;
+  display: block;
+}
+
+.attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8rpx;
+  padding: 6rpx 4rpx;
+  box-sizing: border-box;
+}
+
+.attr-item {
+  display: flex;
+  align-items: center;
+  column-gap: 6rpx;
+  min-width: 0;
+}
+
+.attr-name {
+  flex-shrink: 0;
+  min-width: 112rpx;
+  font-size: 16rpx;
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.attr-bar {
+  flex: 1;
+  height: 5rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+}
+
+.attr-val {
+  width: 36rpx;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 16rpx;
+}
+
+.boss-row {
+  display: flex;
+  align-items: center;
+  column-gap: 6rpx;
+  margin-bottom: 2rpx;
+}
+
+.boss-title {
+  font-size: 18rpx;
+  font-weight: 600;
+}
+
+.badge {
+  padding: 2rpx 6rpx;
+  border-radius: 999rpx;
+  background: rgba(102, 126, 234, 0.25);
+  font-size: 14rpx;
+}
+
+.task-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4rpx 0;
+  font-size: 18rpx;
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.25);
+}
+
+.task-check {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 6rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16rpx;
+  margin-right: 8rpx;
+}
+
+.task-check.checked {
+  background: rgba(102, 126, 234, 0.6);
+  border-color: rgba(102, 126, 234, 0.9);
+  color: #fff;
+}
+
+.task-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-row:last-child {
+  border-bottom: none;
+}
+
+.task-row.done .task-title {
+  text-decoration: line-through;
+}
+
+.task-row.done {
+  opacity: 0.85;
+}
+
+.chev {
+  opacity: 0.8;
+}
+
+.btn-mini {
+  font-size: 16rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 999rpx;
+}
+
+.reward-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rpx 0;
+  font-size: 18rpx;
+}
+
+.nav-item {
+  padding: 2rpx 0;
+  font-size: 16rpx;
+}
+
+.nav-item + .nav-item {
+  border-top: 1rpx solid rgba(255, 255, 255, 0.25);
+}
+
+.friend-item {
+  padding: 4rpx 0;
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.18);
+}
+
+.friend-item:last-child {
+  border-bottom: none;
+}
+
+.friend-name {
+  font-size: 18rpx;
+  font-weight: 600;
+}
+
+.friend-desc {
+  font-size: 16rpx;
+  opacity: 0.9;
+  display: block;
+  margin-top: 2rpx;
+}
+

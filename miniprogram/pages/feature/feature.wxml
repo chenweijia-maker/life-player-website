@@ -1,0 +1,238 @@
+<view class="page">
+  <view class="view-back">
+    <button class="btn btn-outline" bindtap="onBack">← 返回大厅</button>
+  </view>
+  <view class="feature-content">
+    <view wx:if="{{loading}}" class="tip">加载中...</view>
+    <view wx:elif="{{error}}" class="tip error">{{error}}</view>
+    <block wx:else>
+      <view class="feature-title">{{title}}</view>
+
+      <!-- 计划制定：与网页一致 战略清单 + 添加 -->
+      <block wx:if="{{view === 'plan'}}">
+        <view class="section-hint">在这里用「目标 → 战役 → 任务」的树状结构拆解你的长期规划。</view>
+        <view class="form-row">
+          <input class="input-inline" placeholder="人生水晶（一句话愿景）" value="{{planVisionContent}}" bindinput="onPlanVisionInput" />
+          <button class="btn btn-primary btn-inline" bindtap="onAddVision">添加人生水晶</button>
+        </view>
+        <view class="form-row">
+          <input class="input-inline" placeholder="Boss 标题" value="{{planBossTitle}}" bindinput="onPlanBossInput" />
+          <button class="btn btn-primary btn-inline" bindtap="onAddBoss">添加 Boss</button>
+        </view>
+        <view class="form-row">
+          <input class="input-inline" placeholder="挑战标题" value="{{planChallengeTitle}}" bindinput="onPlanChallengeInput" />
+          <button class="btn btn-primary btn-inline" bindtap="onAddChallenge">添加挑战</button>
+        </view>
+        <view class="form-row">
+          <input class="input-inline" placeholder="技能名称" value="{{planSkillName}}" bindinput="onPlanSkillInput" />
+          <button class="btn btn-primary btn-inline" bindtap="onAddSkill">添加技能</button>
+        </view>
+        <view class="section-label">🎯 战略清单</view>
+        <view class="list" wx:if="{{list.length > 0}}">
+          <block wx:for="{{list}}" wx:key="index">
+            <view class="list-item">
+              <view class="list-item-main">
+                <text class="list-item-title">{{item.title}}</text>
+                <text wx:if="{{item.desc}}" class="list-item-desc">{{item.desc}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+        <view wx:else class="empty-state"><text class="empty-hint">暂无目标，在上方添加或首页设定</text></view>
+      </block>
+
+      <!-- 财务管理：与网页一致 财富目标 + 预算 + 记账 + 流水 -->
+      <block wx:elif="{{view === 'finance'}}">
+        <view wx:if="{{extra && extra.wealthGoal}}" class="finance-card">
+          <view class="section-label">🏦 财富Boss进度</view>
+          <view class="progress-bar"><view class="progress-fill" style="width: {{extra.wealthGoal.targetAmount > 0 ? (extra.cash_balance >= extra.wealthGoal.targetAmount ? 100 : (extra.cash_balance / extra.wealthGoal.targetAmount * 100)) : 0}}%;"></view></view>
+          <text class="finance-meta">当前 ¥{{extra.displayBalance || extra.cash_balance || 0}} / 目标 ¥{{extra.displayTarget || extra.wealthGoal.targetAmount}}</text>
+        </view>
+        <view class="form-row" wx:if="{{extra && !extra.wealthGoal}}">
+          <input class="input-inline" placeholder="财富目标名称" value="{{wealthGoalTitle}}" bindinput="onWealthGoalTitleInput" />
+          <input class="input-inline input-amount" type="digit" placeholder="目标金额" value="{{wealthGoalAmount}}" bindinput="onWealthGoalAmountInput" />
+          <button class="btn btn-primary btn-inline" bindtap="onSetWealthGoal">设置财富目标</button>
+        </view>
+        <view wx:if="{{extra && extra.budget}}" class="finance-card">
+          <view class="section-label">🎯 本月自我奖励预算</view>
+          <text class="finance-meta">月度 {{extra.month}} · 预算 ¥{{extra.budget.rewardLimitRmb || 0}} · 已用 ¥{{extra.budget.rewardSpentRmb || 0}}</text>
+        </view>
+        <view class="finance-card">
+          <view class="section-label">🧾 记账</view>
+          <view class="form-row">
+            <picker mode="selector" range="{{['支出','收入']}}" value="{{financeTxType === 'income' ? 1 : 0}}" bindchange="onFinanceTxTypeChange">
+              <view class="picker-inline">{{financeTxType === 'income' ? '收入' : '支出'}}</view>
+            </picker>
+            <input class="input-inline input-amount" type="digit" placeholder="金额（元）" value="{{financeTxAmount}}" bindinput="onFinanceTxAmountInput" />
+            <input class="input-inline" placeholder="备注（可选）" value="{{financeTxNote}}" bindinput="onFinanceTxNoteInput" />
+            <button class="btn btn-primary btn-inline" bindtap="onAddTx">记一笔</button>
+          </view>
+        </view>
+        <view class="section-label">📒 流水（最近）</view>
+        <view class="list" wx:if="{{list.length > 0}}">
+          <block wx:for="{{list}}" wx:key="index">
+            <view class="list-item">
+              <view class="list-item-main">
+                <text class="list-item-title">{{item.title}}{{item.desc ? ' · ' + item.desc : ''}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+        <view wx:else class="empty-state"><text class="empty-hint">暂无流水</text></view>
+      </block>
+
+      <!-- 支线任务：与网页一致 输入 + 添加支线 + 列表完成 -->
+      <block wx:elif="{{view === 'sideQuests'}}">
+        <view class="form-row">
+          <input class="input-inline" placeholder="输入支线目标，如：看一部电影" value="{{sideQuestTitle}}" bindinput="onSideQuestInput" />
+          <button class="btn btn-primary btn-inline" bindtap="onAddSideQuest">添加支线</button>
+        </view>
+        <view class="list" wx:if="{{list.length > 0}}">
+          <block wx:for="{{list}}" wx:key="index">
+            <view class="list-item {{item.status === 'completed' ? 'done' : ''}}">
+              <view class="list-item-main">
+                <text class="list-item-title">{{item.status === 'completed' ? '✅ ' : '🌱 '}}{{item.title}}</text>
+                <text wx:if="{{item.desc}}" class="list-item-desc">{{item.desc}}</text>
+              </view>
+              <block wx:if="{{item.id && item.status !== 'completed'}}">
+                <button class="btn btn-primary btn-mini" size="mini" data-id="{{item.id}}" bindtap="onCompleteTask">完成</button>
+              </block>
+            </view>
+          </block>
+        </view>
+        <view wx:else class="empty-state"><text class="empty-hint">暂无支线，添加一个轻松小目标</text></view>
+      </block>
+
+      <!-- 娱乐记录：与网页一致 活动+时长+记录 + 列表 -->
+      <block wx:elif="{{view === 'entertainment'}}">
+        <view class="section-hint">适当娱乐有助于心情恢复，打卡一次自动让心情 +5</view>
+        <view class="form-row">
+          <input class="input-inline" placeholder="娱乐活动（如：游玩 30 分钟）" value="{{entActivity}}" bindinput="onEntActivityInput" />
+          <input class="input-inline input-amount" type="number" placeholder="时长（分钟）" value="{{entDuration}}" bindinput="onEntDurationInput" />
+          <button class="btn btn-primary btn-inline" bindtap="onAddEntLog">记录娱乐</button>
+        </view>
+        <view class="section-label">最近娱乐记录</view>
+        <view class="list" wx:if="{{list.length > 0}}">
+          <block wx:for="{{list}}" wx:key="index">
+            <view class="list-item">
+              <view class="list-item-main">
+                <text class="list-item-title">{{item.title}}</text>
+                <text wx:if="{{item.desc}}" class="list-item-desc">{{item.desc}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+        <view wx:else class="empty-state"><text class="empty-hint">暂无记录</text></view>
+      </block>
+
+      <!-- 复盘：与网页一致 创建复盘（标题+自由文本）+ 历史 -->
+      <block wx:elif="{{view === 'retrospect'}}">
+        <view class="section-hint">双模式：引导模板或纯文本。这里先用纯文本快速记录。</view>
+        <view class="finance-card">
+          <view class="section-label">📝 创建复盘</view>
+          <input class="input-block" placeholder="标题（可选）" value="{{retroTitle}}" bindinput="onRetroTitleInput" />
+          <textarea class="textarea-block" placeholder="自由记录……" value="{{retroContent}}" bindinput="onRetroContentInput" />
+          <button class="btn btn-primary" bindtap="onSaveRetrospect">保存复盘</button>
+        </view>
+        <view class="section-label">复盘历史</view>
+        <view class="list" wx:if="{{list.length > 0}}">
+          <block wx:for="{{list}}" wx:key="index">
+            <view class="list-item">
+              <view class="list-item-main">
+                <text class="list-item-title">{{item.title}}</text>
+                <text wx:if="{{item.desc}}" class="list-item-desc">{{item.desc}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+        <view wx:else class="empty-state"><text class="empty-hint">还没有复盘数据</text></view>
+      </block>
+
+      <!-- 社交：与网页一致 添加好友 + 好友动态 -->
+      <block wx:elif="{{view === 'social'}}">
+        <view class="form-row">
+          <input class="input-inline" placeholder="好友用户 ID（数字）" value="{{friendId}}" bindinput="onFriendIdInput" />
+          <button class="btn btn-primary btn-inline" bindtap="onAddFriend">添加好友</button>
+        </view>
+        <view class="section-label">🔔 好友动态</view>
+        <view class="list" wx:if="{{list.length > 0}}">
+          <block wx:for="{{list}}" wx:key="index">
+            <view class="list-item">
+              <view class="list-item-main">
+                <text class="list-item-title">{{item.title}}</text>
+                <text wx:if="{{item.desc}}" class="list-item-desc">{{item.desc}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+        <view wx:else class="empty-state"><text class="empty-hint">暂无好友动态，添加好友后可见</text></view>
+      </block>
+
+      <!-- 奖励商城：与网页一致 当前金币 + 商品列表 + 兑换 -->
+      <block wx:elif="{{view === 'shop'}}">
+        <view wx:if="{{extra && extra.coins != null}}" class="balance-row">当前金币：{{extra.coins}}</view>
+        <view class="section-hint">官方预设奖励：兑换会扣金币并计入本月自我奖励预算</view>
+        <view class="list" wx:if="{{list.length > 0}}">
+          <block wx:for="{{list}}" wx:key="index">
+            <view class="list-item">
+              <view class="list-item-main">
+                <text class="list-item-title">{{item.title}}</text>
+                <text wx:if="{{item.desc}}" class="list-item-desc">{{item.desc}}</text>
+              </view>
+              <block wx:if="{{item.id && item.coinCost != null}}">
+                <button class="btn btn-primary btn-mini" size="mini" data-id="{{item.id}}" data-cost="{{item.coinCost}}" bindtap="onRedeem">兑换</button>
+              </block>
+            </view>
+          </block>
+        </view>
+        <view wx:else class="empty-state"><text class="empty-hint">暂无商品</text></view>
+      </block>
+
+      <!-- 励志空间：与网页一致 发布框 + 推荐墙列表 -->
+      <block wx:elif="{{view === 'motivation'}}">
+        <view class="section-hint">发布一句话给现在的自己 / 挑战同路人</view>
+        <view class="finance-card">
+          <textarea class="textarea-block" placeholder="想对现在或未来的自己/同路人说些什么？" value="{{motivationText}}" bindinput="onMotivationInput" />
+          <button class="btn btn-primary" bindtap="onPostMotivation">发布</button>
+        </view>
+        <view class="section-label">💬 推荐墙</view>
+        <view class="list" wx:if="{{list.length > 0}}">
+          <block wx:for="{{list}}" wx:key="index">
+            <view class="list-item">
+              <view class="list-item-main">
+                <text class="list-item-title">{{item.title}}</text>
+                <text wx:if="{{item.desc}}" class="list-item-desc">{{item.desc}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+        <view wx:else class="empty-state"><text class="empty-hint">暂无内容，写下今日一句吧</text></view>
+      </block>
+
+      <!-- 其他 view（如 schedule 等只读） -->
+      <block wx:else>
+        <view wx:if="{{view === 'shop' && extra && extra.coins != null}}" class="balance-row">当前金币：{{extra.coins}}</view>
+        <view class="list" wx:if="{{list.length > 0}}">
+          <block wx:for="{{list}}" wx:key="index">
+            <view class="list-item {{item.status === 'completed' ? 'done' : ''}}">
+              <view class="list-item-main">
+                <text class="list-item-title">{{item.title}}</text>
+                <text wx:if="{{item.desc}}" class="list-item-desc">{{item.desc}}</text>
+              </view>
+              <block wx:if="{{view === 'sideQuests' && item.id && item.status !== 'completed'}}">
+                <button class="btn btn-mini" size="mini" data-id="{{item.id}}" bindtap="onCompleteTask">完成</button>
+              </block>
+              <block wx:elif="{{view === 'shop' && item.id && item.coinCost != null}}">
+                <button class="btn btn-primary btn-mini" size="mini" data-id="{{item.id}}" data-cost="{{item.coinCost}}" bindtap="onRedeem">兑换</button>
+              </block>
+            </view>
+          </block>
+        </view>
+        <view wx:elif="{{list.length === 0 && !error}}" class="empty-state">
+          <text class="empty-text">暂无数据</text>
+          <text class="empty-hint">去相关页面操作或等待数据同步</text>
+        </view>
+      </block>
+    </block>
+  </view>
+</view>

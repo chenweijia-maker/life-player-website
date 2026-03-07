@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/home/home",
+    "pages/placeholder/placeholder",
+    "pages/settings/settings",
+    "pages/feature/feature",
+    "pages/schedule/schedule"
+  ],
+  "window": {
+    "navigationBarTitleText": "人生玩家",
+    "pageOrientation": "landscape"
+  }
+}

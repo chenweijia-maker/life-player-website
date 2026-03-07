@@ -1,0 +1,173 @@
+/* 与网页饮食作息页一致，等比例缩小 */
+.page {
+  min-height: 100%;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+.view-back {
+  margin-bottom: 20rpx;
+}
+
+.btn {
+  border-radius: 999rpx;
+  font-size: 26rpx;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2rpx solid rgba(102, 126, 234, 0.8);
+  color: #667eea;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+}
+
+.schedule-page {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20rpx);
+  border-radius: 20rpx;
+  padding: 28rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.25);
+}
+
+.schedule-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-bottom: 24rpx;
+}
+
+.finance-card {
+  margin-bottom: 24rpx;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.finance-card-h4 {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.row-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+
+.input-time {
+  width: 160rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.4);
+  font-size: 28rpx;
+  background: rgba(255, 255, 255, 0.15);
+  color: #333;
+}
+
+.hint {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.r90-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.r90-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  border-radius: 14rpx;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2rpx solid rgba(255, 255, 255, 0.25);
+}
+
+.r90-option.picked {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.6);
+}
+
+.r90-option-text {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.r90-option-tag {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-right: 12rpx;
+}
+
+.loading-tip {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 20rpx;
+}
+
+.schedule-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin: 24rpx 0;
+  flex-wrap: wrap;
+}
+
+.schedule-btn {
+  flex: 1;
+  min-width: 200rpx;
+  padding: 24rpx 32rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  border: none;
+}
+
+.schedule-btn.sleep {
+  background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+  color: #fff;
+}
+
+.schedule-btn.wake {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  color: #fff;
+}
+
+.schedule-btn-icon {
+  font-size: 36rpx;
+}
+
+.schedule-report {
+  margin-top: 24rpx;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.schedule-report-h4 {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.report-p, .report-tip, .report-empty {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 8rpx;
+}
+
+.bold {
+  font-weight: 700;
+}

@@ -1,0 +1,9 @@
+<view class="page">
+  <view class="card">
+    <view class="title">⚙️ 设置</view>
+    <view class="menu">
+      <button class="menu-btn logout" bindtap="onLogout">退出登录</button>
+    </view>
+    <button class="back-btn" bindtap="onBack">返回首页</button>
+  </view>
+</view>

@@ -1,0 +1,55 @@
+<view class="page">
+  <image class="bg-image" src="/assets/background.png" mode="aspectFill"></image>
+  <view class="container">
+    <view class="title">人生玩家</view>
+    <view class="subtitle">在微信中开启人生游戏之旅</view>
+
+    <view class="auth-card">
+      <view class="intro">
+        <text>本小程序需要使用微信手机号登录，用于创建并保存你的游戏存档。</text>
+      </view>
+
+      <view class="agreements">
+        <checkbox-group bindchange="onAgreeChange">
+          <label class="agree-row">
+            <checkbox value="agree" checked="{{agreed}}" />
+            <view class="agree-text">
+              我已阅读并同意
+              <text class="link" bindtap="onTapUserAgreement">《用户协议》</text>
+              和
+              <text class="link" bindtap="onTapPrivacy">《隐私政策》</text>
+            </view>
+          </label>
+        </checkbox-group>
+      </view>
+
+      <button
+        class="btn btn-primary main-btn"
+        open-type="getPhoneNumber"
+        bindgetphonenumber="onGetPhoneNumber"
+        loading="{{loading}}"
+        disabled="{{!agreed || loading}}"
+      >
+        {{ loading ? '登录中…' : '微信一键登录' }}
+      </button>
+
+      <button
+        wx:if="{{enableGuest}}"
+        class="btn btn-outline guest-btn"
+        loading="{{guestLoading}}"
+        disabled="{{guestLoading}}"
+        bindtap="onGuestLogin"
+      >
+        仅用于测试的游客登录
+      </button>
+
+      <view wx:if="{{error}}" class="msg msg-error">{{error}}</view>
+      <view wx:if="{{hint}}" class="msg msg-hint">{{hint}}</view>
+
+      <view class="audit-note">
+        <text>说明：手机号仅用于账号登录与安全校验，不会用于骚扰或泄露给第三方。</text>
+      </view>
+    </view>
+  </view>
+</view>
+

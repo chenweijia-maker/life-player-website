@@ -1,0 +1,226 @@
+<view class="page">
+  <image class="bg-image" src="/assets/background.png" mode="aspectFill"></image>
+  <scroll-view class="home-scroll" scroll-y="true" enable-flex="true">
+    <view class="home-content">
+      <!-- 顶部状态栏：第一张参考图 - 左标题、中用户、右余额+铃铛 -->
+      <view class="status-bar card">
+        <view class="status-left">
+          <text class="app-title">人生玩家</text>
+        </view>
+        <view class="status-center user-info">
+          <view class="avatar">{{userInitial}}</view>
+          <view class="user-meta">
+            <text class="user-name">{{userName}}</text>
+            <view class="level-row">
+              <text class="level-badge">Lv.{{level}}</text>
+              <view class="exp-bar">
+                <view class="exp-fill" style="width: {{expPercent}}%"></view>
+              </view>
+              <text class="exp-label">{{expPercent}}%</text>
+            </view>
+          </view>
+        </view>
+        <view class="status-right">
+          <text class="amount-main">¥ {{cash}}</text>
+          <view class="amount-row">
+            <text class="amount-sub">当前余额：金币 {{coins}}</text>
+            <text class="icon-bell">🔔</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 三列布局：五行属性与中、右列一起随页面滚动 -->
+      <view class="row">
+        <!-- 左列：五行属性 -->
+        <view class="left-col">
+          <view class="card card-attr">
+            <view class="card-title-row">
+              <text class="card-title">五行属性</text>
+              <text class="card-sub">简洁模式</text>
+            </view>
+            <view class="radar-wrap">
+              <image wx:if="{{radarImageUrl}}" class="radar-image" src="{{radarImageUrl}}" mode="aspectFit"></image>
+              <view class="radar-canvas-wrap">
+                <canvas type="2d" id="radarCanvas" class="radar-canvas"></canvas>
+              </view>
+            </view>
+            <view class="attr-list">
+              <block wx:for="{{attrList}}" wx:key="key">
+                <view class="attr-item">
+                  <text class="attr-name">{{item.icon}} {{item.name}}</text>
+                  <view class="attr-bar">
+                    <view class="attr-bar-fill" style="width: {{item.value}}%; background: {{item.color}};"></view>
+                  </view>
+                  <text class="attr-val">{{item.value}}</text>
+                </view>
+              </block>
+            </view>
+          </view>
+        </view>
+
+        <!-- 中列：与网页一致的双栏网格 主线|技能 日常|奖励 补给 水晶 -->
+        <view class="center-col">
+          <view class="modules">
+            <view class="card">
+              <view class="card-title-row"><text class="card-title">📘 主线任务</text></view>
+              <view wx:if="{{!currentBoss}}">
+                <text class="card-text">还没有 Boss，先在下方的「设定人生水晶与 Boss」里创建一个吧。</text>
+              </view>
+              <view wx:else>
+                <view class="boss-row">
+                  <text class="boss-title">Boss：{{currentBoss.title}}</text>
+                  <text class="badge">进行中</text>
+                </view>
+                <view class="task-list">
+                  <block wx:for="{{mainTasks}}" wx:key="id">
+                    <view class="task-row" bindtap="onTapMainTask" data-id="{{item.id}}">
+                      <text>{{item.title}}</text>
+                      <text class="chev">›</text>
+                    </view>
+                  </block>
+                </view>
+              </view>
+            </view>
+
+            <view class="card">
+              <view class="card-title-row"><text class="card-title">🪄 技能装备库</text></view>
+              <text class="card-text">还没有技能，可以在下方先添加 1-2 个核心技能。</text>
+            </view>
+
+            <view class="card">
+              <view class="card-title-row"><text class="card-title">📋 日常任务</text></view>
+              <view class="task-list">
+                <block wx:for="{{dailyTasks}}" wx:key="id">
+                  <view class="task-row {{item.status === 'completed' ? 'done' : ''}}">
+                    <text class="task-check {{item.status === 'completed' ? 'checked' : ''}}">{{item.status === 'completed' ? '✓' : ''}}</text>
+                    <text class="task-title">{{item.title}}</text>
+                    <button
+                      wx:if="{{item.status !== 'completed'}}"
+                      class="btn-mini"
+                      size="mini"
+                      data-id="{{item.id}}"
+                      bindtap="onCompleteDaily"
+                    >
+                      完成
+                    </button>
+                  </view>
+                </block>
+                <view wx:if="{{dailyTasks.length === 0}}">
+                  <text class="card-text">暂无日常任务</text>
+                </view>
+              </view>
+            </view>
+
+            <view class="card">
+              <view class="card-title-row"><text class="card-title">🏆 奖励仓库</text></view>
+              <view class="reward-list">
+                <view class="reward-row"><text>金币: </text><text>{{coins}}</text></view>
+                <view class="reward-row"><text>徽章: </text><text>连续学习 7 天</text></view>
+                <view class="reward-row"><text>称号: </text><text>早起达人</text></view>
+              </view>
+            </view>
+
+            <view class="card card-supply card-span-2">
+            <view class="card-title-row"><text class="card-title">🎁 补给包仓库</text></view>
+            <view class="supply-desc-row">
+              <view class="card-text-wrap supply-desc">
+                <text class="card-text">把补给包做成「情景配方」, 为不同时刻准备小确幸。</text>
+              </view>
+              <button class="card-btn-supply-v2" bindtap="onNav" data-view="supply" data-title="补给包仓库">⚡ 快速创建情景补给包</button>
+            </view>
+            <view class="supply-list">
+              <view class="supply-item">
+                <text class="supply-name">🧴 精力饮料 ×2</text>
+                <view class="supply-actions">
+                  <button class="btn-tiny btn-tiny-solid" bindtap="onNav" data-view="supply" data-title="补给包仓库">使用</button>
+                  <button class="btn-tiny btn-tiny-outline" bindtap="onNav" data-view="supply" data-title="补给包仓库">以此为基础创建</button>
+                </view>
+              </view>
+              <view class="supply-item">
+                <text class="supply-name">🍵 静心茶 ×2</text>
+                <view class="supply-actions">
+                  <button class="btn-tiny btn-tiny-solid" bindtap="onNav" data-view="supply" data-title="补给包仓库">使用</button>
+                  <button class="btn-tiny btn-tiny-outline" bindtap="onNav" data-view="supply" data-title="补给包仓库">以此为基础创建</button>
+                </view>
+              </view>
+              <view class="supply-item">
+                <text class="supply-name">💊 均衡丸 ×2</text>
+                <view class="supply-actions">
+                  <button class="btn-tiny btn-tiny-solid" bindtap="onNav" data-view="supply" data-title="补给包仓库">使用</button>
+                  <button class="btn-tiny btn-tiny-outline" bindtap="onNav" data-view="supply" data-title="补给包仓库">以此为基础创建</button>
+              </view>
+            </view>
+            </view>
+            </view>
+
+            <view class="card card-crystal card-span-2">
+              <view class="card-title-row"><text class="card-title">🎯 设定人生水晶 & Boss (里程碑 2)</text></view>
+              <view class="card-text-wrap">
+                <text class="card-text">这里先提供一个非常简化的入口: 可以填写一句话「人生水晶」、一个阶段Boss标题, 以及一个挑战标题和所需技能标签。</text>
+              </view>
+              <view class="crystal-form">
+              <view class="crystal-field">
+                <text class="crystal-label">人生水晶 (一句话愿景)</text>
+                <input class="crystal-input" placeholder="例如:成为独立的数字游民" value="{{crystalForm.lifeCrystal}}" bindinput="onCrystalInput" data-field="lifeCrystal" />
+              </view>
+              <view class="crystal-field">
+                <text class="crystal-label">Boss 标题</text>
+                <input class="crystal-input" placeholder="例如:获得 Python 高级工程师 Offer" value="{{crystalForm.bossTitle}}" bindinput="onCrystalInput" data-field="bossTitle" />
+              </view>
+              <view class="crystal-field">
+                <text class="crystal-label">挑战标题</text>
+                <input class="crystal-input" placeholder="例如:完成一个后端项目" value="{{crystalForm.challengeTitle}}" bindinput="onCrystalInput" data-field="challengeTitle" />
+              </view>
+              <view class="crystal-field">
+                <text class="crystal-label">挑战核心技能 (用逗号分隔)</text>
+                <input class="crystal-input" placeholder="例如:Python, Django, 数据库设计" value="{{crystalForm.challengeSkills}}" bindinput="onCrystalInput" data-field="challengeSkills" />
+              </view>
+              <button class="crystal-save-btn" bindtap="onSaveCrystal">保存目标与挑战 (M2)</button>
+            </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 右列：与网页一致 仅 导航 + 好友动态 -->
+        <view class="right-col">
+          <view class="nav-card">
+            <view class="card-title-row"><text class="card-title">🧭 导航</text></view>
+            <view class="nav-list">
+              <view class="nav-item" data-view="schedule" data-title="饮食作息" bindtap="onNav">🍽️ 饮食作息</view>
+              <view class="nav-item" data-view="plan" data-title="计划制定" bindtap="onNav">📝 计划制定</view>
+              <view class="nav-item" data-view="finance" data-title="财务管理" bindtap="onNav">💰 财务管理</view>
+              <view class="nav-item" data-view="sideQuests" data-title="支线任务" bindtap="onNav">🌱 支线任务</view>
+              <view class="nav-item" data-view="entertainment" data-title="娱乐记录" bindtap="onNav">🎮 娱乐记录</view>
+              <view class="nav-item" data-view="retrospect" data-title="复盘" bindtap="onNav">🧠 复盘</view>
+              <view class="nav-item" data-view="social" data-title="社交（好友、公会）" bindtap="onNav">👥 社交（好友、公会）</view>
+              <view class="nav-item" data-view="shop" data-title="奖励商城" bindtap="onNav">🛍️ 奖励商城</view>
+              <view class="nav-item" data-view="motivation" data-title="励志空间" bindtap="onNav">💡 励志空间</view>
+              <view class="nav-item" data-view="settings" data-title="设置" bindtap="onNav">⚙️ 设置</view>
+            </view>
+          </view>
+
+          <view class="nav-card">
+            <view class="card-title-row"><text class="card-title">🔔 好友动态</text></view>
+            <view wx:if="{{friendFeedLoading}}">
+              <text class="card-text">正在载入同道的脚步…</text>
+            </view>
+            <view wx:elif="{{friendFeedError}}">
+              <text class="card-text">{{friendFeedError}}</text>
+            </view>
+            <view wx:elif="{{friendFeed.length === 0}}">
+              <text class="card-text">还没有好友动态, 可以先添加几位同路人。</text>
+            </view>
+            <view wx:else class="friend-list">
+              <block wx:for="{{friendFeed}}" wx:key="id">
+                <view class="friend-item">
+                  <text class="friend-name">{{item.userName}}</text>
+                  <text class="friend-desc">{{item.text}}</text>
+                </view>
+              </block>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

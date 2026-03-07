@@ -1,0 +1,56 @@
+<view class="page">
+  <view class="view-back">
+    <button class="btn btn-outline" bindtap="onBack">← 返回大厅</button>
+  </view>
+  <view class="schedule-page">
+    <view class="schedule-title">🌙 睡眠道场 · R90 模式</view>
+
+    <view class="finance-card">
+      <view class="finance-card-h4">⏰ 固定起床时间（锁定生物钟）</view>
+      <view class="row-wrap">
+        <input class="input-time" value="{{r90WakeTime}}" bindinput="onWakeTimeInput" placeholder="07:00" />
+        <button class="btn btn-outline" bindtap="onLockWakeTime">锁定</button>
+        <text class="hint">建议尽量每日相同</text>
+      </view>
+    </view>
+
+    <view class="finance-card">
+      <view class="finance-card-h4">📊 智能周期推荐</view>
+      <view class="r90-options">
+        <block wx:for="{{r90Options}}" wx:key="cycles">
+          <view class="r90-option {{r90TargetCycles === item.cycles ? 'picked' : ''}}" data-cycles="{{item.cycles}}" bindtap="onSelectCycles">
+            <view class="r90-option-text">{{item.cycles}} 周期（需 {{item.bedAtText}} 入睡）</view>
+            <view class="r90-option-tag">{{item.cycles === 5 ? '🌟 推荐' : (item.cycles === 4 ? '最低恢复' : '深度修复')}}</view>
+            <button class="btn {{r90TargetCycles === item.cycles ? 'btn-primary' : 'btn-outline'}}" size="mini" disabled="{{r90TargetCycles === item.cycles}}">{{r90TargetCycles === item.cycles ? '已选择' : '选择'}}</button>
+          </view>
+        </block>
+        <view wx:if="{{r90Options.length === 0}}" class="loading-tip">加载推荐中...</view>
+      </view>
+    </view>
+
+    <view class="schedule-buttons">
+      <button class="schedule-btn sleep" disabled="{{scheduleLogging}}" bindtap="onStartSleep">
+        <text class="schedule-btn-icon">🌙</text>
+        <text>开始今夜修行</text>
+      </button>
+      <button class="schedule-btn wake" disabled="{{scheduleLogging}}" bindtap="onWake">
+        <text class="schedule-btn-icon">☀️</text>
+        <text>领取周期结算</text>
+      </button>
+    </view>
+
+    <view class="schedule-report">
+      <view class="schedule-report-h4">☀️ R90 周期结算报告</view>
+      <block wx:if="{{r90LastReport}}">
+        <view class="report-p">目标 <text class="bold">{{r90LastReport.targetCycles}}</text> 个周期 · 实际 <text class="bold">{{r90LastReport.cyclesDone}}</text> 个周期（{{r90LastReport.hoursText}} 小时）</view>
+        <view class="report-tip">⚠️ 建议：{{r90LastReport.tip}}</view>
+      </block>
+      <view wx:else class="report-empty">还没有结算报告：先“开始今夜修行”，起床后点“领取周期结算”。</view>
+    </view>
+
+    <view class="schedule-report" wx:if="{{r90Overview && r90Overview.days && r90Overview.days.length > 0}}">
+      <view class="schedule-report-h4">📊 周期趋势（最近 30 天）</view>
+      <view class="report-p">平均周期/夜：<text class="bold">{{r90Overview.avgCycles}}</text> · 周期稳定率：<text class="bold">{{r90Overview.stabilityRate}}%</text>（{{r90Overview.daysCount}} 天）</view>
+    </view>
+  </view>
+</view>
