@@ -801,6 +801,18 @@
         return "无法连接后端，请稍后重试或联系作者检查后端地址：" + API_BASE_URL;
       }
 
+      // 带简单重试的 fetch，缓解后端冷启动或瞬时网络失败
+      async function fetchWithRetry(url, options, retries = 1, delayMs = 800) {
+        for (let attempt = 0; attempt <= retries; attempt++) {
+          try {
+            return await fetch(url, options);
+          } catch (e) {
+            if (attempt === retries) throw e;
+            await new Promise((resolve) => setTimeout(resolve, delayMs));
+          }
+        }
+      }
+
       // 初始化 Capacitor（如果可用）
       let Capacitor = null;
       if (window.Capacitor) {
@@ -871,11 +883,11 @@
           }
           try {
             setSending(true);
-            const res = await fetch(apiUrl("auth/send-code"), {
+            const res = await fetchWithRetry(apiUrl("auth/send-code"), {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ phone: trimmed }),
-            });
+            }, 1, 1000);
             const data = await res.json();
             if (!data.success) {
               setError(data.error || "发送验证码失败");
@@ -902,11 +914,11 @@
           }
           try {
             setLoggingIn(true);
-            const res = await fetch(apiUrl("auth/login"), {
+            const res = await fetchWithRetry(apiUrl("auth/login"), {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ phone: trimmed, code, nickname: nickname.trim() || undefined }),
-            });
+            }, 1, 1000);
             const data = await res.json();
             if (!data.success) {
               setError(data.error || "登录失败");
