@@ -793,6 +793,14 @@
         return API_BASE_URL ? `${API_BASE_URL}/${path}` : `/${path}`;
       }
 
+      // 统一的后端连接失败提示文案
+      function getBackendOfflineMessage() {
+        if (!API_BASE_URL) {
+          return "无法连接后端，请稍后重试或联系作者确认后端服务是否在线。";
+        }
+        return "无法连接后端，请稍后重试或联系作者检查后端地址：" + API_BASE_URL;
+      }
+
       // 初始化 Capacitor（如果可用）
       let Capacitor = null;
       if (window.Capacitor) {
@@ -875,7 +883,7 @@
               setHint("验证码已发送到您的手机");
             }
           } catch (e) {
-            setError("无法连接后端，请确认 backend 已运行在 http://localhost:4000");
+          setError(getBackendOfflineMessage());
           } finally {
             setSending(false);
           }
@@ -906,7 +914,7 @@
               onLoggedIn(data.token, data.user);
             }
           } catch (e) {
-            setError("无法连接后端，请确认 backend 已运行在 http://localhost:4000");
+            setError(getBackendOfflineMessage());
           } finally {
             setLoggingIn(false);
           }
