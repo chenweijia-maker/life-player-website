@@ -3844,10 +3844,15 @@ app.get('/api/recommend/demo', (req, res) => {
   });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`人生玩家 backend running on http://0.0.0.0:${PORT}`);
-  console.log(`本地访问: http://localhost:${PORT}`);
-  console.log(`局域网访问: http://<your-ip>:${PORT}`);
-  console.log(`公网访问: 请确保服务器有公网 IP 或使用内网穿透服务`);
-});
+// 在本地或普通服务器环境下启动监听；
+// 在 Vercel 等无服务器环境中仅导出 app，由 Serverless 封装处理。
+if (!process.env.VERCEL) {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`人生玩家 backend running on http://0.0.0.0:${PORT}`);
+    console.log(`本地访问: http://localhost:${PORT}`);
+    console.log(`局域网访问: http://<your-ip>:${PORT}`);
+    console.log(`公网访问: 请确保服务器有公网 IP 或使用内网穿透服务`);
+  });
+}
 
+module.exports = app;
